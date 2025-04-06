@@ -1,0 +1,21 @@
+{
+  "name": "Estudos",
+  "short_name": "Estudos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0077cc",
+  "theme_color": "#0077cc",
+  "description": "App de revisões inteligentes para seus estudos",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
