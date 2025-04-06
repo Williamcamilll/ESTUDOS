@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const STORAGE_KEY = 'revisoesEstudo';
+  const NOME_KEY = 'nomeUsuario';
   const form = document.getElementById('form-estudo');
   const listaRevisoes = document.getElementById('lista-revisoes');
   const btnTema = document.getElementById('toggle-tema');
@@ -7,10 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const painelResumo = document.querySelector('#painel-resumo strong');
   const boasVindas = document.getElementById('boas-vindas');
 
-  const STORAGE_KEY = 'revisoesEstudo';
-  const NOME_KEY = 'nomeUsuario';
-
-  // Pergunta nome
   function perguntarNome() {
     let nome = localStorage.getItem(NOME_KEY);
     if (!nome) {
@@ -22,10 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (painelResumo) painelResumo.textContent = `📊 Resumo da semana de ${nome}:`;
     return nome;
   }
-
   const nomeUsuario = perguntarNome();
 
-  // Toast visual
   function mostrarToast(mensagem) {
     const toast = document.createElement('div');
     toast.textContent = mensagem;
@@ -39,8 +35,16 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
     toast.style.zIndex = '9999';
     toast.style.fontWeight = '600';
+    toast.style.maxWidth = '90%';
+    toast.style.boxSizing = 'border-box';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  }
+
+  function vibrar(padrao = [200]) {
+    if ("vibrate" in navigator) {
+      navigator.vibrate(padrao);
+    }
   }
 
   function salvarRevisoes(revisoes) {
@@ -79,20 +83,21 @@ document.addEventListener('DOMContentLoaded', function () {
     atualizarResumo(revisoes);
     const hoje = new Date().toLocaleDateString('pt-BR');
 
-    revisoes.forEach((revisao, indexRevisao) => {
-      revisao.datas.forEach((data, i) => {
-        const status = revisao.status[i];
+    revisoes.forEach((rev, indexRev) => {
+      rev.datas.forEach((data, i) => {
+        const status = rev.status[i];
         if (filtro !== 'todos' && status !== filtro) return;
 
         const item = document.createElement('div');
         item.classList.add('revisao-item');
+
         if (data === hoje && status === 'pendente') {
           item.style.borderLeft = '6px solid orange';
           item.style.backgroundColor = 'rgba(255,165,0,0.08)';
         }
 
         const titulo = document.createElement('h3');
-        titulo.textContent = `${revisao.titulo} — Revisão ${i + 1}`;
+        titulo.textContent = `${rev.titulo} — Revisão ${i + 1}`;
 
         const dataEl = document.createElement('p');
         dataEl.textContent = `📅 Revisar em: ${data}`;
@@ -106,10 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
         btnRevisar.textContent = status === 'revisado' ? '✔️' : 'Marcar como revisado';
         btnRevisar.disabled = status === 'revisado';
         btnRevisar.addEventListener('click', () => {
-          revisoes[indexRevisao].status[i] = 'revisado';
+          rev.status[i] = 'revisado';
           salvarRevisoes(revisoes);
           exibirRevisoes(revisoes, seletorFiltro.value);
           mostrarToast(`✅ ${nomeUsuario}, revisão marcada como feita!`);
+          vibrar([200]);
         });
 
         const btnExcluir = document.createElement('button');
@@ -117,17 +123,18 @@ document.addEventListener('DOMContentLoaded', function () {
         btnExcluir.style.backgroundColor = '#cc0000';
         btnExcluir.style.marginLeft = '1rem';
         btnExcluir.addEventListener('click', () => {
-          if (confirm(`Deseja excluir "${revisao.titulo}"?`)) {
-            revisoes.splice(indexRevisao, 1);
+          if (confirm(`Deseja excluir "${rev.titulo}"?`)) {
+            revisoes.splice(indexRev, 1);
             salvarRevisoes(revisoes);
             exibirRevisoes(revisoes, seletorFiltro.value);
             mostrarToast(`🗑️ ${nomeUsuario}, conteúdo excluído.`);
+            vibrar([100, 100, 100]);
           }
         });
 
-        if (revisao.descricao) {
+        if (rev.descricao) {
           const nota = document.createElement('p');
-          nota.textContent = `🧠 ${revisao.descricao}`;
+          nota.textContent = `🧠 ${rev.descricao}`;
           item.appendChild(nota);
         }
 
@@ -171,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
     exibirRevisoes(revisoes, seletorFiltro.value);
     form.reset();
     mostrarToast(`✅ ${nomeUsuario}, conteúdo salvo!`);
+    vibrar([100, 50, 100]);
   });
 
   seletorFiltro.addEventListener('change', () => {
@@ -215,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function () {
     doc.save(`revisoes-${nomeUsuario.toLowerCase()}.pdf`);
   });
 
-  // Notificações
   function pedirPermissao() {
     if ('Notification' in window && Notification.permission !== 'granted') {
       Notification.requestPermission();
@@ -233,12 +240,12 @@ document.addEventListener('DOMContentLoaded', function () {
             body: `📘 ${rev.titulo} - Revisão ${i + 1}`,
             icon: 'https://cdn-icons-png.flaticon.com/512/2709/2709691.png'
           });
+          vibrar([200, 100, 200]);
         }
       });
     });
   }
 
-  // Modo escuro
   function aplicarTema(escuro) {
     document.body.classList.toggle('dark-mode', escuro);
     localStorage.setItem('temaPreferido', escuro ? 'escuro' : 'claro');
@@ -255,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
     aplicarTema(escuro);
   });
 
-  // Backup e Importação
   const btnBackup = document.createElement('button');
   btnBackup.textContent = '💾 Backup JSON';
   btnBackup.style.marginRight = '1rem';
@@ -288,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
         salvarRevisoes(dados);
         exibirRevisoes(dados, seletorFiltro.value);
         mostrarToast(`📥 Dados importados com sucesso, ${nomeUsuario}!`);
+        vibrar([300]);
       } catch {
         alert("Arquivo inválido.");
       }
@@ -295,7 +302,6 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.readAsText(file);
   });
 
-  // Inicialização final
   inicializarTema();
   pedirPermissao();
   const revisoesSalvas = carregarRevisoes();
