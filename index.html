@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estudos - Revisões</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Boas-vindas com nome -->
+  <div id="boas-vindas" style="padding: 1rem 2rem; background-color: #0077cc; color: white; font-size: 1.2rem; font-weight: 600;">
+    <!-- Será preenchido via JavaScript -->
+  </div>
+
+  <!-- Cabeçalho -->
+  <header>
+    <h1>📘 Estudos</h1>
+    <button id="toggle-tema">🌗 Alternar tema</button>
+    <nav>
+      <ul>
+        <li><a href="#">Início</a></li>
+        <li><a href="#">Sobre</a></li>
+        <li><a href="#">Ajuda</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main>
+    <!-- Cadastro de conteúdo -->
+    <section class="cadastro-estudo">
+      <h2>📝 Registrar novo conteúdo</h2>
+      <p>Cadastre aqui os conteúdos estudados e gere automaticamente as datas ideais para revisão espaçada.</p>
+
+      <form id="form-estudo">
+        <label for="titulo">📚 Título do conteúdo</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Ex: Biologia - Sistema Imunológico" required />
+
+        <label for="data">🗓️ Data em que estudou</label>
+        <input type="date" id="data" name="data" required />
+
+        <label for="descricao">🧠 Observações ou link do material</label>
+        <textarea id="descricao" name="descricao" rows="4" placeholder="Ex: Resumo da aula, link do PDF, YouTube..."></textarea>
+
+        <button type="submit">✅ Salvar e gerar revisões</button>
+      </form>
+    </section>
+
+    <!-- Agenda de revisões -->
+    <section class="agenda-revisoes">
+      <h2>📅 Suas revisões programadas</h2>
+      <p>Veja aqui suas revisões organizadas pelas datas ideais com base na ciência da memorização.</p>
+
+      <!-- Painel resumo com nome -->
+      <div id="painel-resumo">
+        <strong>📊 Resumo da semana:</strong>
+        <ul>
+          <li id="total-revisoes">Total de revisões: 0</li>
+          <li id="pendentes-semana">Pendentes desta semana: 0</li>
+          <li id="revisadas">Revisões feitas: 0</li>
+        </ul>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros">
+        <label for="filtro-status">🔎 Filtrar por status:</label>
+        <select id="filtro-status">
+          <option value="todos">📋 Todos</option>
+          <option value="pendente">🕐 Pendentes</option>
+          <option value="revisado">✅ Revisados</option>
+        </select>
+      </div>
+
+      <!-- Botões de exportação -->
+      <!-- Backup/import serão inseridos pelo JS -->
+      <button id="btn-exportar-pdf">📄 Exportar como PDF</button>
+
+      <!-- Lista de revisões -->
+      <div id="lista-revisoes">
+        <!-- Revisões aparecem aqui -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>Desenvolvido por WCC • SP • 2025</p>
+    <p><a href="#">Política de Privacidade</a> | <a href="#">Contato</a></p>
+  </footer>
+
+  <!-- Bibliotecas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
